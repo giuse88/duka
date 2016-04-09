@@ -1,2 +1,4 @@
-# data-dowloader
-Dukascopy data dowloader
+# Dukascopy data downloader
+
+
+
