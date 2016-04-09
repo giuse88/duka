@@ -36,6 +36,8 @@ def update_progress(done, total, avg_time_per_job):
 
 
 def how_many_days(start, end):
+    if start == end:
+        return 1
     delta_days = (end - start).days
     saturday_counter = delta_days / 7
     return delta_days - saturday_counter

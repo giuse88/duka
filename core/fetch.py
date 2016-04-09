@@ -8,7 +8,6 @@ URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d
 async def get(url):
     loop = asyncio.get_event_loop()
     buffer = BytesIO()
-    print(url)
     res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
     if res.status_code == 200:
         for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
@@ -28,11 +27,7 @@ def fetch_day(symbol, day):
     }
 
     loop = asyncio.get_event_loop()
-    tasks = []
-    for i in range(0, 24):
-        url_info['hour'] = i
-        tasks.append(asyncio.ensure_future(get(URL.format(**url_info))))
-
+    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(24)]
     loop.run_until_complete(asyncio.wait(tasks))
 
     def add(acc, task):
