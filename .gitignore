@@ -60,3 +60,4 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+atlassian-ide-plugin.xml
