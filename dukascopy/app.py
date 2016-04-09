@@ -18,7 +18,7 @@ def dates(start, end):
         start = start + timedelta(days=1)
 
 
-def format_seconds(seconds):
+def format_left_time(seconds):
     if seconds < 0:
         return "--:--:--"
     m, s = divmod(seconds, 60)
@@ -31,7 +31,7 @@ def update_progress(done, total, avg_time_per_job):
     progress = int((1.0 if progress > 1.0 else progress) * 100)
     remainder = 100 - progress
     estimation = avg_time_per_job * (total - done)
-    print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress, format_seconds(estimation)),
+    print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress, format_left_time(estimation)),
           end='')
 
 
