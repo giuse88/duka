@@ -3,7 +3,7 @@
 import argparse
 from datetime import date
 
-from duka.core import valid_date
+from duka.core import valid_date, set_up_signals
 from duka.app import app
 
 
@@ -27,6 +27,7 @@ def main():
     else:
         end = args.day
 
+    set_up_signals()
     app(args.symbols, start, end, args.thread)
 
 

@@ -19,7 +19,7 @@ def tokenize(buffer):
 def normalize(day, ticks):
     def norm(time, ask, bid, volume_ask, volume_bid):
         date = datetime(day.year, day.month, day.day) + timedelta(milliseconds=time)
-        return date, ask, bid, round(volume_ask * 1000000), round(volume_bid * 1000000)
+        return date, ask/100000, bid/100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
     return list(map(lambda x: norm(*x), ticks))
 
 

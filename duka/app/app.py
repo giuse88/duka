@@ -1,6 +1,6 @@
-import time
 import concurrent
 import threading
+import time
 from collections import deque
 from datetime import timedelta, date
 
@@ -30,13 +30,14 @@ def format_left_time(seconds):
     return "%d:%02d:%02d" % (h, m, s)
 
 
-def update_progress(done, total, avg_time_per_job):
+def update_progress(done, total, avg_time_per_job, threads):
     progress = done / total
     progress = int((1.0 if progress > 1.0 else progress) * 100)
     remainder = 100 - progress
-    estimation = avg_time_per_job * (total - done)
+    estimation = (avg_time_per_job * (total - done) / threads)
     if not is_debug_mode():
-        print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress, format_left_time(estimation)), end='')
+        print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress,
+                                                  format_left_time(estimation)), end='')
 
 
 def how_many_days(start, end):
@@ -51,7 +52,7 @@ def app(symbols, start, end, threads):
     total_days = how_many_days(start, end)
 
     last_fetch = deque([], maxlen=5)
-    update_progress(day_counter, total_days, -1)
+    update_progress(day_counter, total_days, -1, threads)
 
     def do_work():
         global day_counter
@@ -72,8 +73,8 @@ def app(symbols, start, end, threads):
 
         for future in concurrent.futures.as_completed(futures):
             if future.exception() is None:
-                update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch))
+                update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch), threads)
             else:
                 print("An error happen when fetching data : ", future.exception())
 
-    update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch))
+    update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch), threads)

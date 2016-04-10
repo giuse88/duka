@@ -2,7 +2,7 @@ import csv
 
 from .utils import Logger
 
-TEMPLATE_FILE_NAME = "{}_{}_{:2d}_{:2d}.csv"
+TEMPLATE_FILE_NAME = "{}_{}_{:02d}_{:02d}.csv"
 
 
 def dump(currency, ticks):

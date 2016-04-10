@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 import logging
+import signal
 from datetime import datetime
 
 TEMPLATE = '%(asctime)s - %(levelname)s - %(threadName)s [%(thread)d] -  %(message)s'
@@ -35,3 +36,10 @@ def get_logger():
 
 
 Logger = get_logger()
+
+
+def set_up_signals():
+    def signal_handler(signal, frame):
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
