@@ -2,6 +2,8 @@ import lzma
 import struct
 from datetime import timedelta, datetime
 
+lzma._BUFFER_SIZE = 2048
+
 
 def decompress_lzma(compressed_buffer):
     return lzma.decompress(compressed_buffer)
@@ -19,7 +21,8 @@ def tokenize(buffer):
 def normalize(day, ticks):
     def norm(time, ask, bid, volume_ask, volume_bid):
         date = datetime(day.year, day.month, day.day) + timedelta(milliseconds=time)
-        return date, ask/100000, bid/100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
+        return date, ask / 100000, bid / 100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
+
     return list(map(lambda x: norm(*x), ticks))
 
 

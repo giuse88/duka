@@ -64,11 +64,15 @@ def app(symbols, start, end, threads):
     last_fetch = deque([], maxlen=5)
     update_progress(day_counter, total_days, -1, threads)
 
-    def do_work():
+    def do_work(symbol, day):
         global day_counter
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
-        dump(symbol, decompress(day, fetch_day(symbol, day)))
+        print(day)
+        try:
+            dump(symbol, decompress(day, fetch_day(symbol, day)))
+        except Exception as e:
+            print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
         last_fetch.append(elapsed_time)
         with lock:
@@ -79,7 +83,7 @@ def app(symbols, start, end, threads):
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         for symbol in symbols:
             for day in days(start, end):
-                futures.append(executor.submit(do_work))
+                futures.append(executor.submit(do_work, symbol, day))
 
         for future in concurrent.futures.as_completed(futures):
             if future.exception() is None:
