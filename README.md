@@ -4,8 +4,19 @@ Finding good Forex data is difficult or expensive. Dukascopy has made available 
 Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the forex market. 
 However, it takes a lot of time to download a large data set from the website because you can download only one day per time. In order to solve this issue, I created `duka`.  `duka` is a small terminal application which download ticks for a given date range from the Dukascopy historical repo and saves it in CSV.  `duka` takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :) 
 
-This is a screen shot :
+This is what `dukas looks like:
 
+![duka](Screen Shot 2016-04-10 at 20.15.51.png)
+
+As you can see, `duka` estimates the remaing time until the download is complete. This is extremelly useful when downloading a large data set. 
+
+This is what the resulting folder may look like: 
+
+![Folder content](Screen Shot 2016-04-10 at 20.25.15.png)
+
+-----------------
+
+Found a bug? Missing a feature? Open a issue and I will try to fix it as soon as possible. Pull request are also welcomed. :) 
 
 ## Installation
 
