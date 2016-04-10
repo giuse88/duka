@@ -1,13 +1,8 @@
 # Dukascopy data downloader
 
-Finding good Forex data is difficult and expensive. Dukascopy has made available an excellent web tool  
-https://www.dukascopy.com/swiss/english/marketwatch/historical/ to download tick data for a large a variety of 
-Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to model the forex market. 
-However, it would take a lot of time to download a large data set from the website. In order to solve this issue, I
-created `duka`. 
-`duka` is a small terminal application which download ticks data from the Dukascopy historical repo and saves it in the csv format. 
-`duka` takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for 
-one year for a given instrument. No bad :) 
+Finding good Forex data is difficult or expensive. Dukascopy has made available an excellent [web tool](https://www.dukascopy.com/swiss/english/marketwatch/historical/) to download tick data for a large a variety of 
+Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the forex market. 
+However, it takes a lot of time to download a large data set from the website because you can download only one day per time. In order to solve this issue, I created `duka`.  `duka` is a small terminal application which download ticks for a given date range from the Dukascopy historical repo and saves it in CSV.  `duka` takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :) 
 
 This is a screen shot :
 
@@ -22,10 +17,11 @@ pip install duka
 
 ## Usage
 
-- Help 
-  ```
-  duka -h
-  ```
+- Help
+
+   ```
+   duka -h
+   ```
 - Download last available tick set (i.e. yesterday if not Saturday ) for EURUSD and GBPUSD 
   ```
   duka EURUSD GBPUSD 
