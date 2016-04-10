@@ -68,9 +68,8 @@ def app(symbols, start, end, threads):
         global day_counter
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
-        print(day)
         try:
-            dump(symbol, decompress(day, fetch_day(symbol, day)))
+            dump(symbol, day, decompress(day, fetch_day(symbol, day)))
         except Exception as e:
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time

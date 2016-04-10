@@ -5,9 +5,8 @@ from .utils import Logger
 TEMPLATE_FILE_NAME = "{}_{}_{:02d}_{:02d}.csv"
 
 
-def dump(currency, ticks):
-    date = ticks[0][0]
-    file_name = TEMPLATE_FILE_NAME.format(currency, date.year, date.month, date.day)
+def dump(currency, day, ticks):
+    file_name = TEMPLATE_FILE_NAME.format(currency, day.year, day.month, day.day)
     Logger.info("Writing {0}".format(file_name))
     with open(file_name, 'w') as csv_file:
         fieldnames = ['time', 'ask', 'bid', 'ask_volume', 'bid_volume']

@@ -27,4 +27,6 @@ def normalize(day, ticks):
 
 
 def decompress(day, compressed_buffer):
+    if compressed_buffer.nbytes == 0:
+        return compressed_buffer
     return normalize(day, tokenize(decompress_lzma(compressed_buffer)))
