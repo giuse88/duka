@@ -14,7 +14,7 @@ def main():
                         default=date.today() - timedelta(1))
     parser.add_argument('-s', '--startdate', type=valid_date, help='start date format YYYY-MM-DD (default today)')
     parser.add_argument('-e', '--enddate', type=valid_date, help='end date format YYYY-MM-DD (default today)')
-    parser.add_argument('-t', '--thread', type=int, help='number of threads (default 20)', default=20)
+    parser.add_argument('-t', '--thread', type=int, help='number of threads (default 20)', default=5)
     args = parser.parse_args()
 
     if args.startdate is not None:
