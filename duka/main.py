@@ -9,7 +9,7 @@ from duka.app import app
 
 def main():
     parser = argparse.ArgumentParser(prog='dukas', usage='%(prog)s [options]')
-    parser.add_argument('symbols', metavar='N', type=str, nargs='+', help='symbol list using format EURUSD EURGBP')
+    parser.add_argument('symbols', metavar='SYMBOLS', type=str, nargs='+', help='symbol list using format EURUSD EURGBP')
     parser.add_argument('-d', '--day', type=valid_date, help='specific day format YYYY-MM-DD (default today)',
                         default=date.today())
     parser.add_argument('-s', '--startdate', type=valid_date, help='start date format YYYY-MM-DD (default today)')

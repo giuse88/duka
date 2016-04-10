@@ -1,25 +1,33 @@
 import asyncio
-import requests
+import aiohttp
+import threading
+import time
 from functools import reduce
 from io import BytesIO, DEFAULT_BUFFER_SIZE
+from ..core.utils import Logger
 
 URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 
 async def get(url):
-    loop = asyncio.get_event_loop()
     buffer = BytesIO()
-    res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
-    if res.status_code == 200:
-        for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
-            buffer.write(chunk)
-    else:
-        print("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
+    id = url[36:].replace('/', " ")
+    with aiohttp.ClientSession(loop=asyncio.get_event_loop()) as session:
+        start = time.time()
+        Logger.info("Fetching {0}".format(id))
+        async with session.get(url) as resp:
+            while True:
+                chunk = await resp.content.read(DEFAULT_BUFFER_SIZE)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+    Logger.info("Fetched {0} completed in {1}s".format(id, time.time() - start))
     return buffer.getbuffer()
 
 
 def fetch_day(symbol, day):
 
-    loop = asyncio.new_event_loop()
+    local_data = threading.local()
+    loop = getattr(local_data, 'loop', asyncio.new_event_loop())
     asyncio.set_event_loop(loop)
 
     url_info = {
@@ -29,6 +37,7 @@ def fetch_day(symbol, day):
         'day': day.day
     }
 
+    loop = asyncio.get_event_loop()
     tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(24)]
     loop.run_until_complete(asyncio.wait(tasks))
 

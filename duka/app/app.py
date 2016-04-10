@@ -1,10 +1,11 @@
 import time
 import concurrent
-from threading import Lock
+import threading
 from collections import deque
 from datetime import timedelta, date
 
-from ..core import dump, decompress, fetch_day
+from ..core import dump, decompress, fetch_day, Logger
+from ..core.utils import is_debug_mode
 
 SATURDAY = 5
 day_counter = 0
@@ -34,8 +35,8 @@ def update_progress(done, total, avg_time_per_job):
     progress = int((1.0 if progress > 1.0 else progress) * 100)
     remainder = 100 - progress
     estimation = avg_time_per_job * (total - done)
-    print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress, format_left_time(estimation)),
-          end='')
+    if not is_debug_mode():
+        print('\r[{0}] {1}%  Left : {2}  '.format('#' * progress + '-' * remainder, progress, format_left_time(estimation)), end='')
 
 
 def how_many_days(start, end):
@@ -45,7 +46,7 @@ def how_many_days(start, end):
 def app(symbols, start, end, threads):
     if start > end:
         return
-    lock = Lock()
+    lock = threading.Lock()
     global day_counter
     total_days = how_many_days(start, end)
 
@@ -55,10 +56,13 @@ def app(symbols, start, end, threads):
     def do_work():
         global day_counter
         star_time = time.time()
+        Logger.info("Fetching day {0}".format(day))
         dump(symbol, decompress(day, fetch_day(symbol, day)))
-        last_fetch.append(time.time() - star_time)
+        elapsed_time = time.time() - star_time
+        last_fetch.append(elapsed_time)
         with lock:
             day_counter += 1
+        Logger.info("Day {0} fetched in {1}s".format(day, elapsed_time))
 
     futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
