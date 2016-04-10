@@ -1,4 +1,4 @@
-# Dukascopy data downloader
+# duka - Dukascopy data downloader
 
 Finding good Forex data is difficult or expensive. Dukascopy has made available an excellent [web tool](https://www.dukascopy.com/swiss/english/marketwatch/historical/) to download tick data for a large a variety of 
 Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the forex market. 
