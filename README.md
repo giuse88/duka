@@ -1,7 +1,6 @@
 # Dukascopy data downloader
 
-Simple terminal utility which allows to download data ticks from : https://www.dukascopy.com/swiss/english/marketwatch/historical/
-
+Finding good Forex data is difficult and expensive. Dukascopy has made available an excellent web tool  https://www.dukascopy.com/swiss/english/marketwatch/historical/ to download tick data for a large a variaty of Forex, CFD and commodities. This is awesome and extremely useful. However, it would take a lot of time to download a large data set from the website. In order to solve this issue, I created `duka`. `duka` is a small terminal application which download ticks data from the Dukascopy historical repo and saves it in the csv format.  
 
 
 ## Installation
