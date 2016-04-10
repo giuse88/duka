@@ -65,7 +65,7 @@ Found a bug? Missing a feature? Open a issue and I will try to fix it as soon as
 
 This software is licensed under the MIT License.
 
-Copyright Giuseppe Pes, 2014.
+Copyright Giuseppe Pes, 2016.
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
