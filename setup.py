@@ -1,7 +1,7 @@
 from setuptools import setup
 
 NAME = "duka"
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 
 setup(
     name=NAME,
@@ -11,7 +11,7 @@ setup(
     author='Giuseppe Pes',
     author_email='giuse88@gmail.com',
     url='https://github.com/giuse88/dukascopy-data-downloader',
-    download_url='https://github.com/peterldowns/mypackage/tarball/' + VERSION,
+    download_url='https://github.com/giuse88/dukascopy-data-downloader/tarball/' + VERSION,
     keywords=['dukascopy', 'forex', 'finance', 'historical data', 'price', 'currency'],
     entry_points={
         'console_scripts': [
