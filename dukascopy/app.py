@@ -1,19 +1,22 @@
+import concurrent
 import time
-from datetime import timedelta
 from collections import deque
+from datetime import timedelta, date
+from threading import Lock
 
-from core import fetch_day, decompress, dump
-
+from core import dump, decompress, fetch_day
 
 SATURDAY = 5
+day_counter = 0
 
 
-def dates(start, end):
+def days(start, end):
     if start > end:
         return
     end = end + timedelta(days=1)
+    today = date.today()
     while start != end:
-        if start.weekday() is not SATURDAY:
+        if start.weekday() != SATURDAY and start != today:
             yield start
         start = start + timedelta(days=1)
 
@@ -36,28 +39,38 @@ def update_progress(done, total, avg_time_per_job):
 
 
 def how_many_days(start, end):
-    if start == end:
-        return 1
-    delta_days = (end - start).days
-    saturday_counter = delta_days / 7
-    return delta_days - saturday_counter
+    return sum(1 for _ in days(start, end))
 
 
 def fetch_ticks(symbols, start, end):
     if start > end:
         return
 
-    fetched_days = 0
-    days = how_many_days(start, end)
+    lock = Lock()
+    global day_counter
+    total_days = how_many_days(start, end)
 
-    last_fetch = deque([], maxlen=3)
-    update_progress(fetched_days, days, -1)
+    last_fetch = deque([], maxlen=5)
+    update_progress(day_counter, total_days, -1)
 
-    for symbol in symbols:
-        for date in dates(start, end):
-            star_time = time.time()
-            dump(symbol, decompress(date, fetch_day(symbol, date)))
-            last_fetch.append(time.time() - star_time)
-            fetched_days += 1
-            update_progress(fetched_days, days, sum(last_fetch) / len(last_fetch))
+    def do_work():
+        global day_counter
+        star_time = time.time()
+        dump(symbol, decompress(day, fetch_day(symbol, day)))
+        last_fetch.append(time.time() - star_time)
+        with lock:
+            day_counter += 1
 
+    futures = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        for symbol in symbols:
+            for day in days(start, end):
+                futures.append(executor.submit(do_work))
+
+        for future in concurrent.futures.as_completed(futures):
+            if future.exception() is None:
+                update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch))
+            else:
+                print("An error happen when fetching data : ", future.exception())
+
+    update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch))

@@ -19,6 +19,9 @@ async def get(url):
 
 def fetch_day(symbol, day):
 
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     url_info = {
         'currency': symbol,
         'year': day.year,
@@ -26,7 +29,6 @@ def fetch_day(symbol, day):
         'day': day.day
     }
 
-    loop = asyncio.get_event_loop()
     tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(24)]
     loop.run_until_complete(asyncio.wait(tasks))
 
