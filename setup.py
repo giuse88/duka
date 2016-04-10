@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 NAME = "duka"
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 setup(
     name=NAME,
@@ -13,8 +13,8 @@ setup(
     description='Dukascopy Bank SA historical data downloader',
     author='Giuseppe Pes',
     author_email='giuse88@gmail.com',
-    url='https://github.com/giuse88/dukascopy-data-downloader',
-    download_url='https://github.com/giuse88/dukascopy-data-downloader/tarball/' + VERSION,
+    url='https://github.com/giuse88/duka',
+    download_url='https://github.com/giuse88/duka/tarball/' + VERSION,
     keywords=['dukascopy', 'forex', 'finance', 'historical data', 'price', 'currency'],
     entry_points={
         'console_scripts': [
