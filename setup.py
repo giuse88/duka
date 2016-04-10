@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+
 from setuptools import setup
 
 NAME = "duka"
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 setup(
     name=NAME,
@@ -18,5 +20,17 @@ setup(
             'duka = duka.main:main',
         ],
     },
-    classifiers=[],
+    classifiers=[
+        "Programming Language :: Python",
+        "Environment :: Console",
+        "Programming Language:: Python:: 3.5",
+        "Programming Language:: Python:: 3:: Only",
+        "Development Status :: 4 - Beta",
+        "Environment :: Other Environment",
+        "Intended Audience :: Developers",
+        "Intended Audience:: Financial and Insurance Industry",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+        "Operating System :: OS Independent",
+    ],
 )
+
