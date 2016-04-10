@@ -60,7 +60,8 @@ pip install duka
 All data is saved in the current folder. You can also specify the number of threads to be used by setting the `t` option. I recomand not to use too many threads because you might encounter problems opening too many connection to the server. 
 
 
+# License
 
-
+MIT Licensed. Copyright (c) Jed Watson 2016.
 
 
