@@ -42,10 +42,9 @@ def how_many_days(start, end):
     return sum(1 for _ in days(start, end))
 
 
-def fetch_ticks(symbols, start, end):
+def fetch_ticks(symbols, start, end, threads):
     if start > end:
         return
-
     lock = Lock()
     global day_counter
     total_days = how_many_days(start, end)
@@ -62,7 +61,7 @@ def fetch_ticks(symbols, start, end):
             day_counter += 1
 
     futures = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         for symbol in symbols:
             for day in days(start, end):
                 futures.append(executor.submit(do_work))
