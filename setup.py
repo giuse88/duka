@@ -3,12 +3,12 @@
 from setuptools import setup, find_packages
 
 NAME = "duka"
-VERSION = '0.0.8'
+VERSION = '0.0.9'
 
 setup(
     name=NAME,
     packages=find_packages(),
-    install_requires=['requests>=2.9.0'],
+    install_requires=['aiohttp>=0.21.5'],
     version=VERSION,
     description='Dukascopy Bank SA historical data downloader',
     author='Giuseppe Pes',
