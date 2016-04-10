@@ -1,10 +1,10 @@
-import concurrent
 import time
+import concurrent
+from threading import Lock
 from collections import deque
 from datetime import timedelta, date
-from threading import Lock
 
-from core import dump, decompress, fetch_day
+from ..core import dump, decompress, fetch_day
 
 SATURDAY = 5
 day_counter = 0
@@ -42,7 +42,7 @@ def how_many_days(start, end):
     return sum(1 for _ in days(start, end))
 
 
-def fetch_ticks(symbols, start, end, threads):
+def app(symbols, start, end, threads):
     if start > end:
         return
     lock = Lock()

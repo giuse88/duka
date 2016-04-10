@@ -1,8 +1,8 @@
 import argparse
 from datetime import date
 
-from core.utils import valid_date
-from dukascopy import fetch_ticks
+from duka.core import valid_date
+from duka.app import app
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     else:
         end = args.day
 
-    fetch_ticks(args.symbols, start, end, args.thread)
+    app(args.symbols, start, end, args.thread)
 
 
 if __name__ == '__main__':
