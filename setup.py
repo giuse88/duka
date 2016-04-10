@@ -3,7 +3,7 @@
 from setuptools import setup
 
 NAME = "duka"
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 
 setup(
     name=NAME,
@@ -21,7 +21,6 @@ setup(
         ],
     },
     classifiers=[
-        "Programming Language :: Python",
         "Environment :: Console",
         "Programming Language:: Python:: 3.5",
         "Programming Language:: Python:: 3:: Only",
