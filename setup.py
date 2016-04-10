@@ -1,7 +1,7 @@
-from distutils.core import setup
+from setuptools import setup
 
 NAME = "duka"
-VERSION = '0.1'
+VERSION = '0.0.2'
 
 setup(
     name=NAME,
@@ -13,5 +13,10 @@ setup(
     url='https://github.com/giuse88/dukascopy-data-downloader',
     download_url='https://github.com/peterldowns/mypackage/tarball/' + VERSION,
     keywords=['dukascopy', 'forex', 'finance', 'historical data', 'price', 'currency'],
+    entry_points={
+        'console_scripts': [
+            'duka = duka.main:main',
+        ],
+    },
     classifiers=[],
 )
