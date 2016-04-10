@@ -22,17 +22,17 @@ pip install duka
    ```
    duka -h
    ```
-- Download last available tick set (i.e. yesterday if not Saturday ) for EURUSD and GBPUSD 
+- Download last available tick set (i.e. yesterday if not Saturday ) for `EURUSD` and `GBPUSD` 
 
   ```
   duka EURUSD GBPUSD 
   ```
-- Download ticks for the EURUSD for a specific day
+- Download ticks for the `EURUSD` for a specific day
 
   ``` 
   duka EURUSD -d 2016-02-02
   ```
-- Download ticks for the EURUSD between two dates. For example:
+- Download ticks for the `EURUSD` between two dates. For example:
 
   ```
   duka EURUSD -s 2015-01-01 -e 2016-12-31 
