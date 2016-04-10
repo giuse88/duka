@@ -63,3 +63,4 @@ target/
 atlassian-ide-plugin.xml
 .idea
 *.csv
+test_data/

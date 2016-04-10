@@ -31,7 +31,7 @@ def format_left_time(seconds):
 
 
 def update_progress(done, total, avg_time_per_job, threads):
-    progress = done / total
+    progress = 1 if total == 0 else done / total
     progress = int((1.0 if progress > 1.0 else progress) * 100)
     remainder = 100 - progress
     estimation = (avg_time_per_job * (total - done) / threads)
@@ -44,12 +44,22 @@ def how_many_days(start, end):
     return sum(1 for _ in days(start, end))
 
 
+def avg(fetch_times):
+    if len(fetch_times) != 0:
+        return sum(fetch_times) / len(fetch_times)
+    else:
+        return -1
+
+
 def app(symbols, start, end, threads):
     if start > end:
         return
     lock = threading.Lock()
     global day_counter
     total_days = how_many_days(start, end)
+
+    if total_days == 0:
+        return
 
     last_fetch = deque([], maxlen=5)
     update_progress(day_counter, total_days, -1, threads)
@@ -73,8 +83,8 @@ def app(symbols, start, end, threads):
 
         for future in concurrent.futures.as_completed(futures):
             if future.exception() is None:
-                update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch), threads)
+                update_progress(day_counter, total_days, avg(last_fetch), threads)
             else:
                 print("An error happen when fetching data : ", future.exception())
 
-    update_progress(day_counter, total_days, sum(last_fetch) / len(last_fetch), threads)
+    update_progress(day_counter, total_days, avg(last_fetch), threads)
