@@ -62,6 +62,6 @@ All data is saved in the current folder. You can also specify the number of thre
 
 # License
 
-MIT Licensed. Copyright (c) Jed Watson 2016.
+MIT Licensed.
 
 
