@@ -6,13 +6,13 @@ However, it takes a lot of time to download a large data set from the website be
 
 This is what `dukas` looks like:
 
-![duka](.Screen Shot 2016-04-10 at 20.15.51.png)
+![duka](.img/Screen Shot 2016-04-10 at 20.15.51.png)
 
 As you can see, `duka` estimates the remaing time until the download is complete. This is extremelly useful when downloading a large data set. 
 
 This is what the resulting folder may look like: 
 
-![Folder content](.Screen Shot 2016-04-10 at 20.25.15.png)
+![Folder content](.img/Screen Shot 2016-04-10 at 20.25.15.png)
 
 -----------------
 
