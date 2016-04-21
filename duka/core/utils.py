@@ -1,9 +1,11 @@
 import sys
+
 import os
 import argparse
 import logging
 import signal
 from datetime import datetime
+import time
 
 TEMPLATE = '%(asctime)s - %(levelname)s - %(threadName)s [%(thread)d] -  %(message)s'
 
@@ -43,3 +45,19 @@ def set_up_signals():
         sys.exit(0)
 
     signal.signal(signal.SIGINT, signal_handler)
+
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+
+
+def to_utc_timestamp(time_str):
+    return time.mktime(from_time_string(time_str).timetuple())
+
+
+def from_time_string(time_str):
+    if '.' not in time_str:
+        time_str += '.0'
+    return datetime.strptime(time_str, DATETIME_FORMAT)
+
+
+def stringify(timestamp):
+    return str(datetime.fromtimestamp(timestamp))
