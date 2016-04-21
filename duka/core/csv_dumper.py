@@ -1,8 +1,7 @@
 import csv
-from .utils import Logger
-from . import TimeFrame
-from .utils import to_utc_timestamp
-from datetime import datetime
+
+from .candle import Candle
+from .utils import Logger, to_utc_timestamp, TimeFrame
 
 TEMPLATE_FILE_NAME = "{}_{}_{:02d}_{:02d}.csv"
 
@@ -13,35 +12,6 @@ class CSVFormatter(object):
     COLUMN_BID = 2
     COLUMN_ASK_VOLUME = 3
     COLUMN_BID_VOLUME = 4
-
-
-class Candle:
-    def __init__(self, symbol, timestamp, timeframe, sorted_values):
-        self.symbol = symbol
-        self.timestamp = timestamp
-        self.timeframe = timeframe
-        self.open_price = sorted_values[0]
-        self.close_price = sorted_values[len(sorted_values) - 1]
-        self.high = max(sorted_values)
-        self.low = min(sorted_values)
-
-    def __str__(self):
-        return str(datetime.fromtimestamp(self.timestamp)) + " [" + str(self.timestamp) + "] " \
-               + "-- " + self.symbol + " -- " \
-               + "{ H:" + str(self.high) + " L:" + str(self.low) + " O: " \
-               + str(self.open_price) + " C: " + str(self.close_price) + " }"
-
-    def __eq__(self, other):
-        return self.symbol == other.symbol \
-               and self.timestamp == other.timestamp \
-               and self.timeframe == other.timeframe \
-               and self.close_price == other.close_price \
-               and self.open_price == other.open_price \
-               and self.high == other.high \
-               and self.low == other.low
-
-    def __repr__(self):
-        return self.__str__()
 
 
 def dump(symbol, day, ticks, time_frame=TimeFrame.TICK):
