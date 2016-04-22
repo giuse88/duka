@@ -37,7 +37,7 @@ def dump(symbol, day, ticks, time_frame=TimeFrame.TICK):
                 previous_key = key
 
         if time_frame != TimeFrame.TICK:
-            write_candle(writer, Candle(symbol, previous_key, time_frame, ticks))
+            write_candle(writer, Candle(symbol, previous_key, time_frame, current_ticks))
     Logger.info("{0} completed".format(file_name))
 
 
