@@ -55,6 +55,8 @@ def get_logger():
         out_hdlr.setLevel(logging.INFO)
         logger.addHandler(out_hdlr)
         logger.setLevel(logging.INFO)
+    else:
+        logger.addHandler(logging.NullHandler())
     return logger
 
 
