@@ -5,7 +5,7 @@ from collections import deque
 from datetime import timedelta, date
 
 from ..core import decompress, fetch_day, Logger, CSVDumper
-from ..core.utils import is_debug_mode
+from ..core.utils import is_debug_mode, TimeFrame
 
 SATURDAY = 5
 day_counter = 0
@@ -51,6 +51,21 @@ def avg(fetch_times):
         return -1
 
 
+def name(symbol, timeframe, start, end):
+    ext = ".csv"
+
+    for x in dir(TimeFrame):
+        if getattr(TimeFrame, x) == timeframe:
+            ts_str = x
+
+    name = symbol + "_" + ts_str + "_" + str(start)
+
+    if start != end:
+        name += "_" + str(end)
+
+    return name + ext
+
+
 def app(symbols, start, end, threads, timeframe):
     if start > end:
         return
@@ -80,7 +95,7 @@ def app(symbols, start, end, threads, timeframe):
 
     futures = []
 
-    csv_files = {symbol: CSVDumper(file_name=symbol, timeframe=timeframe, symbol=symbol) for symbol in symbols}
+    csv_files = {symbol: CSVDumper(file_name=name(symbol, timeframe, start, end), timeframe=timeframe, symbol=symbol) for symbol in symbols}
     print(csv_files)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
