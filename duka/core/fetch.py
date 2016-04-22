@@ -9,7 +9,7 @@ import requests
 from ..core.utils import Logger
 
 URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
-
+ATTEMPTS = 5
 
 async def get(url):
     loop = asyncio.get_event_loop()
@@ -17,7 +17,7 @@ async def get(url):
     id = url[35:].replace('/', " ")
     start = time.time()
     Logger.info("Fetching {0}".format(id))
-    for i in range(3):
+    for i in range(ATTEMPTS):
         try:
             res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
             if res.status_code == 200:
@@ -29,8 +29,9 @@ async def get(url):
                 Logger.warn("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
         except Exception as e:
             Logger.warn("Request {0} failed with exception : {1}".format(id, str(e)))
+            time.sleep(0.5*i)
 
-    raise Exception("Request failed for {0} after 3 attempts".format(url))
+    raise Exception("Request failed for {0} after ATTEMPTS attempts".format(url))
 
 
 def fetch_day(symbol, day):
