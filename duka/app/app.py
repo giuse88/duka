@@ -95,7 +95,8 @@ def app(symbols, start, end, threads, timeframe):
 
     futures = []
 
-    csv_files = {symbol: CSVDumper(file_name=name(symbol, timeframe, start, end), timeframe=timeframe, symbol=symbol) for symbol in symbols}
+    csv_files = {symbol: CSVDumper(file_name=name(symbol, timeframe, start, end), timeframe=timeframe, symbol=symbol)
+                 for symbol in symbols}
     print(csv_files)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:

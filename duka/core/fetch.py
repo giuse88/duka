@@ -11,15 +11,20 @@ URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d
 async def get(url):
     loop = asyncio.get_event_loop()
     buffer = BytesIO()
-    id = url[36:].replace('/', " ")
+    id = url[35:].replace('/', " ")
     start = time.time()
     Logger.info("Fetching {0}".format(id))
-    res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
-    if res.status_code == 200:
-        for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
-            buffer.write(chunk)
-    else:
-        print("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
+    try:
+        res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
+        if res.status_code == 200:
+            for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
+                buffer.write(chunk)
+        else:
+            print("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
+    except Exception as e:
+        print(e)
+        print("Exception when fetching the data")
+
     Logger.info("Fetched {0} completed in {1}s".format(id, time.time() - start))
     return buffer.getbuffer()
 
