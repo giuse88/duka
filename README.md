@@ -3,7 +3,15 @@
 Finding good Forex data is difficult or expensive. Dukascopy has made available an excellent [web tool](https://www.dukascopy.com/swiss/english/marketwatch/historical/) to download tick data for a large a variety of 
 Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the Forex market. 
 However, it takes a lot of time to download a large data set from the website because you can download only one day per time. In order to solve this issue, I created `duka`.  
-`duka` is a small terminal application which download ticks for a given date range from the Dukascopy historical repo and saves it in CSV.  `duka` takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :) 
+
+`duka` is a small terminal application that can be used to download ticks for a given date range from the Dukascopy historical data feed for one or more symbols. `duka` takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :)
+
+Key features :
+ - Ticks data with volumes
+ - candle formating with different timeframes ( from 1 minute to 1 day )
+ - CSV output
+ - mutithread support
+ - large variaty of symbols
 
 This is what `duka` looks like:
 
@@ -11,7 +19,6 @@ This is what `duka` looks like:
 
 As you can see, `duka` estimates the time left until the download is completed. This is extremely useful when downloading a large data set. 
 
-`duka` supports tick download as well as candles with different time frame. For a full list check the usage section below.
 
 I hope you enjoy it!! 
 
@@ -25,7 +32,7 @@ pip install duka
 ```
 
 ## Usage
-    ```
+```
     usage: duka [options]
 
     positional arguments:
@@ -38,7 +45,7 @@ pip install duka
           -e ENDDATE   end date format YYYY-MM-DD (default today)
           -t THREAD    number of threads (default 20)
           -c CANDLE    use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H 1D
-    ```
+```
 
 ## Examples
 
