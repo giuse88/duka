@@ -1,6 +1,6 @@
 import asyncio
-import aiohttp
 import threading
+import requests
 import time
 from functools import reduce
 from io import BytesIO, DEFAULT_BUFFER_SIZE
@@ -9,17 +9,17 @@ from ..core.utils import Logger
 URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 
 async def get(url):
+    loop = asyncio.get_event_loop()
     buffer = BytesIO()
     id = url[36:].replace('/', " ")
-    with aiohttp.ClientSession(loop=asyncio.get_event_loop()) as session:
-        start = time.time()
-        Logger.info("Fetching {0}".format(id))
-        async with session.get(url) as resp:
-            while True:
-                chunk = await resp.content.read(DEFAULT_BUFFER_SIZE)
-                if not chunk:
-                    break
-                buffer.write(chunk)
+    start = time.time()
+    Logger.info("Fetching {0}".format(id))
+    res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
+    if res.status_code == 200:
+        for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
+            buffer.write(chunk)
+    else:
+        print("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
     Logger.info("Fetched {0} completed in {1}s".format(id, time.time() - start))
     return buffer.getbuffer()
 
