@@ -17,29 +17,35 @@ class CSVFormatter(object):
 class CSVDumper:
     def __init__(self, **kwargs):
         self.symbol = kwargs['symbol']
-        self.time_frame = kwargs['time_frame']
+        self.timeframe = kwargs['timeframe']
         self.file_name = kwargs['file_name']
+
+    def __enter__(self):
         self.csv_file = open(self.file_name, 'w')
         self.writer = csv.DictWriter(self.csv_file, fieldnames=self.get_field_name())
         self.writer.writeheader()
         Logger.info("{0} created".format(self.file_name))
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.csv_file.close()
 
     def dump(self, ticks):
 
         for tick in ticks:
-            if self.time_frame == TimeFrame.TICK:
+            if self.timeframe == TimeFrame.TICK:
                 self.write_tick(tick)
             else:
                 ts = to_utc_timestamp(tick[0])
-                key = int(ts - (ts % self.time_frame))
+                key = int(ts - (ts % self.timeframe))
                 if previous_key != key and previous_key is not None:
-                    self.write_candle(Candle(self.symbol, previous_key, self.time_frame, current_ticks))
+                    self.write_candle(Candle(self.symbol, previous_key, self.timeframe, current_ticks))
                     current_ticks = []
                 current_ticks.append(tick[1])
                 previous_key = key
 
-        if self.time_frame != TimeFrame.TICK:
-            self.write_candle(Candle(self.symbol, previous_key, self.time_frame, ticks))
+        if self.timeframe != TimeFrame.TICK:
+            self.write_candle(Candle(self.symbol, previous_key, self.timeframe, ticks))
 
     def write_tick(self, tick):
         self.writer.writerow(
@@ -58,6 +64,6 @@ class CSVDumper:
              'low': candle.low})
 
     def get_field_name(self):
-        if self.time_frame == TimeFrame.TICK:
+        if self.timeframe == TimeFrame.TICK:
             return ['time', 'ask', 'bid', 'ask_volume', 'bid_volume']
         return ['time', 'open', 'close', 'high', 'low']

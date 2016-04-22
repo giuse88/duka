@@ -69,7 +69,7 @@ def app(symbols, start, end, threads, timeframe):
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
         try:
-            csv_dumper.dump(symbol, day, decompress(day, fetch_day(symbol, day)), timeframe)
+            csv_dumper.dump(decompress(day, fetch_day(symbol, day)))
         except Exception as e:
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
@@ -81,7 +81,7 @@ def app(symbols, start, end, threads, timeframe):
     futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         for symbol in symbols:
-            with CSVDumper(symbol=symbol, timeframe=timeframe, name='test') as csv_dumper:
+            with CSVDumper(symbol=symbol, timeframe=timeframe, file_name='test') as csv_dumper:
                 for day in days(start, end):
                     futures.append(executor.submit(do_work, symbol, day, csv_dumper))
 
