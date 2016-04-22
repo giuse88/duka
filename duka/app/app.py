@@ -71,6 +71,7 @@ def app(symbols, start, end, threads, timeframe):
         try:
             dump(symbol, day, decompress(day, fetch_day(symbol, day)), timeframe)
         except Exception as e:
+            print(e)
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
         last_fetch.append(elapsed_time)

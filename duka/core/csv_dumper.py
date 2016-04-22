@@ -1,7 +1,9 @@
 import csv
+import time
 
 from .candle import Candle
-from .utils import Logger, to_utc_timestamp, TimeFrame
+from .utils import Logger, TimeFrame
+
 
 TEMPLATE_FILE_NAME = "{}_{}_{:02d}_{:02d}.csv"
 
@@ -23,12 +25,12 @@ def dump(symbol, day, ticks, time_frame=TimeFrame.TICK):
         writer.writeheader()
         for tick in ticks:
             if time_frame == TimeFrame.TICK:
-                write_tick(tick)
+                write_tick(writer,tick)
             else:
-                ts = to_utc_timestamp(tick[0])
+                ts = time.mktime(tick[0].timetuple())
                 key = int(ts - (ts % time_frame))
                 if previous_key != key and previous_key is not None:
-                    write_candle(Candle(symbol, previous_key, time_frame, current_ticks))
+                    write_candle(writer, Candle(symbol, previous_key, time_frame, current_ticks))
                     current_ticks = []
                 current_ticks.append(tick[1])
                 previous_key = key
