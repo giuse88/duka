@@ -2,7 +2,7 @@ import csv
 import time
 
 from .candle import Candle
-from .utils import Logger, TimeFrame
+from .utils import Logger, TimeFrame, stringify
 
 
 TEMPLATE_FILE_NAME = "{}_{}_{:02d}_{:02d}.csv"
@@ -20,9 +20,10 @@ def dump(symbol, day, ticks, time_frame=TimeFrame.TICK):
     file_name = TEMPLATE_FILE_NAME.format(symbol, day.year, day.month, day.day)
     Logger.info("Writing {0}".format(file_name))
     with open(file_name, 'w') as csv_file:
-        fieldnames = ['time', 'ask', 'bid', 'ask_volume', 'bid_volume']
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, fieldnames=get_header(time_frame))
         writer.writeheader()
+        previous_key = None
+        current_ticks = []
         for tick in ticks:
             if time_frame == TimeFrame.TICK:
                 write_tick(writer,tick)
@@ -57,8 +58,8 @@ def write_tick(writer, tick):
 
 def write_candle(writer, candle):
     writer.writerow(
-        {'time': candle.timestamp,
-         'open': candle.open,
-         'close': candle.close,
+        {'time': stringify(candle.timestamp),
+         'open': candle.open_price,
+         'close': candle.close_price,
          'high': candle.high,
          'low': candle.low})

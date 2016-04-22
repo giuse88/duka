@@ -75,3 +75,11 @@ def from_time_string(time_str):
 
 def stringify(timestamp):
     return str(datetime.fromtimestamp(timestamp))
+
+
+def valid_timeframe(s):
+    try:
+        return getattr(TimeFrame, s.upper())
+    except AttributeError:
+        msg = "Not a valid time frame: '{0}'.".format(s)
+        raise argparse.ArgumentTypeError(msg)
