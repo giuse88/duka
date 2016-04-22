@@ -8,10 +8,10 @@ However, it takes a lot of time to download a large data set from the website be
 
 Key features :
  - Ticks data with volumes
- - Candle formating with different timeframes ( from 1 minute to 1 day )
+ - Candle formatting with different time-frames ( from 1 minute to 1 day )
  - CSV output
- - mutithread support
- - Large variaty of symbols
+ - multi-thread support
+ - Large variety of symbols
 
 This is what **duka** looks like:
 
@@ -25,7 +25,7 @@ I hope you enjoy it!!
 
 ## Installation
 
-**duka** requires python 3.5 and aiohttp 0.21.5. It can be installed using `pip` as follows:
+**duka** requires python 3.5 and request 2.0.1. It can be installed using `pip` as follows:
 
 ```
 pip install duka
@@ -43,8 +43,8 @@ pip install duka
      -d DAY       specific day format YYYY-MM-DD (default today)
      -s STARTDATE start date format YYYY-MM-DD (default today)
      -e ENDDATE   end date format YYYY-MM-DD (default today)
-     -t THREAD    number of threads (default 20)
      -c CANDLE    use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H 1D
+     -t THREAD    number of threads (default 20)
 ```
 
 ## Examples
@@ -79,7 +79,8 @@ pip install duka
   ```
   downloads all ticks from the beginning of the year until now. 
 
-All data is saved in the current folder. You can also specify the number of threads to be used by setting the `t` option. I recomand not to use too many threads because you might encounter problems opening too many connection to the server. 
+All data is saved in the current folder. You can also specify the number of threads to be used by setting the `t` option. 
+I recommend not to use too many threads because you might encounter problems opening too many connection to the server. 
 
 ## Helping 
 Found a bug? Missing a feature? Open a issue and I will try to fix it as soon as possible. Pull request are also welcomed. :) 
