@@ -5,8 +5,7 @@ from datetime import date, timedelta
 
 from duka.app import app
 from duka.core import valid_date, set_up_signals
-from duka.core.utils import valid_timeframe
-from duka.core.utils import TimeFrame
+from duka.core.utils import valid_timeframe, TimeFrame
 
 
 def main():

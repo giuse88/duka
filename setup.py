@@ -8,7 +8,7 @@ VERSION = '0.1.2'
 setup(
     name=NAME,
     packages=find_packages(),
-    install_requires=['aiohttp>=0.21.5'],
+    install_requires=['requests>=2.9.1'],
     version=VERSION,
     description='Dukascopy Bank SA historical data downloader',
     author='Giuseppe Pes',

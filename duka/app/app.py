@@ -4,7 +4,7 @@ import time
 from collections import deque
 from datetime import timedelta, date
 
-from ..core import dump, decompress, fetch_day, Logger
+from ..core import decompress, fetch_day, Logger, CSVDumper
 from ..core.utils import is_debug_mode
 
 SATURDAY = 5
@@ -64,14 +64,13 @@ def app(symbols, start, end, threads, timeframe):
     last_fetch = deque([], maxlen=5)
     update_progress(day_counter, total_days, -1, threads)
 
-    def do_work(symbol, day):
+    def do_work(symbol, day, csv_dumper):
         global day_counter
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
         try:
-            dump(symbol, day, decompress(day, fetch_day(symbol, day)), timeframe)
+            csv_dumper.dump(decompress(day, fetch_day(symbol, day)))
         except Exception as e:
-            print(e)
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
         last_fetch.append(elapsed_time)
@@ -80,15 +79,22 @@ def app(symbols, start, end, threads, timeframe):
         Logger.info("Day {0} fetched in {1}s".format(day, elapsed_time))
 
     futures = []
+
+    csv_files = {symbol: CSVDumper(file_name=symbol, timeframe=timeframe, symbol=symbol) for symbol in symbols}
+    print(csv_files)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         for symbol in symbols:
             for day in days(start, end):
-                futures.append(executor.submit(do_work, symbol, day))
+                futures.append(executor.submit(do_work, symbol, day, csv_files[symbol]))
 
         for future in concurrent.futures.as_completed(futures):
             if future.exception() is None:
                 update_progress(day_counter, total_days, avg(last_fetch), threads)
             else:
                 print("An error happen when fetching data : ", future.exception())
+
+    for csv in csv_files.values():
+        csv.close()
 
     update_progress(day_counter, total_days, avg(last_fetch), threads)
