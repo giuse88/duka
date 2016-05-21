@@ -32,31 +32,57 @@
 <a id="duka---dukascopy-data-downloader" class="anchor" href="#duka---dukascopy-data-downloader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>duka - Dukascopy data downloader</h1>
 
 <p>Finding good Forex data is difficult or expensive. Dukascopy has made available an excellent <a href="https://www.dukascopy.com/swiss/english/marketwatch/historical/">web tool</a> to download tick data for a large a variety of 
-Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the forex market. 
-However, it takes a lot of time to download a large data set from the website because you can download only one day per time. In order to solve this issue, I created <code>duka</code>.  <code>duka</code> is a small terminal application which download ticks for a given date range from the Dukascopy historical repo and saves it in CSV.  <code>duka</code> takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :) </p>
+Forex, CFD and commodities. This is awesome and extremely useful for people, like me, trying to study the Forex market. 
+However, it takes a lot of time to download a large data set from the website because you can download only one day per time. In order to solve this issue, I created <strong>duka</strong>.  </p>
 
-<p>This is what <code>dukas</code> looks like:</p>
+<p><strong>duka</strong> is a small terminal application that can be used to download ticks for a given date range from the Dukascopy historical data feed for one or more symbols. <strong>duka</strong> takes advantage of python threads and coroutine in order to speed up the download. It takes roughly 10m to download tick data for  one year for a given instrument. No bad :)</p>
 
-<p><img src=".img/Screen%20Shot%202016-04-10%20at%2020.15.51.png" alt="duka"></p>
+<p>Key features :</p>
 
-<p>As you can see, <code>duka</code> estimates the remaing time until the download is complete. This is extremelly useful when downloading a large data set. </p>
+<ul>
+<li>Ticks data with volumes</li>
+<li>Candle formatting with different time-frames ( from 1 minute to 1 day )</li>
+<li>CSV output</li>
+<li>multi-thread support</li>
+<li>Large variety of symbols</li>
+</ul>
 
-<p>This is what the resulting folder may look like: </p>
+<p>This is what <strong>duka</strong> looks like:</p>
 
-<p><img src=".img/Screen%20Shot%202016-04-10%20at%2020.25.15.png" alt="Folder content"></p>
+<p><img src="https://raw.githubusercontent.com/giuse88/duka/master/.img/Screen%20Shot%202016-04-10%20at%2020.15.51.png" alt="duka"></p>
+
+<p>As you can see, <strong>duka</strong> estimates the time left until the download is completed. This is extremely useful when downloading a large data set. </p>
 
 <p>I hope you enjoy it!! </p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-<p><code>duka</code> requires python 3.5 and aiohttp 0.21.5. It can be installed using <code>pip</code> as follows:</p>
+<p><strong>duka</strong> requires python 3.5 and request 2.0.1. It can be installed using <code>pip</code> as follows:</p>
 
 <pre><code>pip install duka
 </code></pre>
 
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<pre><code> usage: duka [options]
+
+ positional arguments:
+    SYMBOLS               symbol list using format EURUSD EURGBP 
+
+ optional arguments:
+     -h           show help message and exit 
+     -d DAY       specific day format YYYY-MM-DD (default today)
+     -s STARTDATE start date format YYYY-MM-DD (default today)
+     -e ENDDATE   end date format YYYY-MM-DD (default today)
+     -c CANDLE    use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H 1D
+     -f FOLDER    the dowloaded data will be saved in FOLDER (default '.')
+     -t THREAD    number of threads (default 10)
+</code></pre>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
 <ul>
 <li>
@@ -95,7 +121,8 @@ However, it takes a lot of time to download a large data set from the website be
 </li>
 </ul>
 
-<p>All data is saved in the current folder. You can also specify the number of threads to be used by setting the <code>t</code> option. I recomand not to use too many threads because you might encounter problems opening too many connection to the server. </p>
+<p>All data is saved in the current folder. You can also specify the number of threads to be used by setting the <code>t</code> option. 
+I recommend not to use too many threads because you might encounter problems opening too many connection to the server. </p>
 
 <h2>
 <a id="helping" class="anchor" href="#helping" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Helping</h2>
