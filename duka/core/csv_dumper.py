@@ -4,6 +4,8 @@ import time
 from .candle import Candle
 from .utils import TimeFrame, stringify, Logger
 
+from os.path import join
+
 TEMPLATE_FILE_NAME = "{}-{}_{:02d}_{:02d}-{}_{:02d}_{:02d}.csv"
 
 
@@ -34,11 +36,12 @@ def write_candle(writer, candle):
 
 
 class CSVDumper:
-    def __init__(self, symbol, timeframe, start, end):
+    def __init__(self, symbol, timeframe, start, end, folder):
         self.symbol = symbol
         self.timeframe = timeframe
         self.start = start
         self.end = end
+        self.folder = folder
         self.buffer = {}
 
     def get_header(self):
@@ -72,7 +75,7 @@ class CSVDumper:
 
         Logger.info("Writing {0}".format(file_name))
 
-        with open(file_name, 'w') as csv_file:
+        with open(join(self.folder, file_name), 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=self.get_header())
             writer.writeheader()
             for day in sorted(self.buffer.keys()):
