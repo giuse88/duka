@@ -4,7 +4,8 @@ import time
 from collections import deque
 from datetime import timedelta, date
 
-from ..core import decompress, fetch_day, Logger, CSVDumper
+from ..core import decompress, fetch_day, Logger
+from ..core.csv_dumper import CSVDumper
 from ..core.utils import is_debug_mode, TimeFrame
 
 SATURDAY = 5
@@ -79,12 +80,12 @@ def app(symbols, start, end, threads, timeframe):
     last_fetch = deque([], maxlen=5)
     update_progress(day_counter, total_days, -1, threads)
 
-    def do_work(symbol, day, csv_dumper):
+    def do_work(symbol, day, csv):
         global day_counter
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
         try:
-            csv_dumper.dump(decompress(day, fetch_day(symbol, day)))
+            csv.append(day, decompress(day, fetch_day(symbol, day)))
         except Exception as e:
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
@@ -95,21 +96,23 @@ def app(symbols, start, end, threads, timeframe):
 
     futures = []
 
-    csv_files = {symbol: CSVDumper(file_name=name(symbol, timeframe, start, end), timeframe=timeframe, symbol=symbol)
-                 for symbol in symbols}
-
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+
+        files = {symbol: CSVDumper(symbol, timeframe, start, end) for symbol in symbols}
+        print(files)
+
         for symbol in symbols:
             for day in days(start, end):
-                futures.append(executor.submit(do_work, symbol, day, csv_files[symbol]))
+                futures.append(executor.submit(do_work, symbol, day, files[symbol]))
 
         for future in concurrent.futures.as_completed(futures):
             if future.exception() is None:
                 update_progress(day_counter, total_days, avg(last_fetch), threads)
             else:
-                print("An error happen when fetching data : ", future.exception())
+                Logger.error("An error happen when fetching data : ", future.exception())
 
-    for csv in csv_files.values():
-        csv.close()
+        Logger.info("Fetching data terminated")
+        for file in files.values():
+            file.dump()
 
     update_progress(day_counter, total_days, avg(last_fetch), threads)
