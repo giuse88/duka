@@ -44,7 +44,8 @@ pip install duka
      -s STARTDATE start date format YYYY-MM-DD (default today)
      -e ENDDATE   end date format YYYY-MM-DD (default today)
      -c CANDLE    use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H 1D
-     -t THREAD    number of threads (default 20)
+     -f FOLDER    the dowloaded data will be saved in FOLDER (default '.')
+     -t THREAD    number of threads (default 10)
 ```
 
 ## Examples
