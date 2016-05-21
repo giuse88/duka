@@ -99,7 +99,6 @@ def app(symbols, start, end, threads, timeframe, folder):
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
 
         files = {symbol: CSVDumper(symbol, timeframe, start, end, folder) for symbol in symbols}
-        print(files)
 
         for symbol in symbols:
             for day in days(start, end):
