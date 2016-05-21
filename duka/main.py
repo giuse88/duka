@@ -17,6 +17,7 @@ def main():
     parser.add_argument('-s', '--startdate', type=valid_date, help='start date format YYYY-MM-DD (default today)')
     parser.add_argument('-e', '--enddate', type=valid_date, help='end date format YYYY-MM-DD (default today)')
     parser.add_argument('-t', '--thread', type=int, help='number of threads (default 20)', default=5)
+    parser.add_argument('-f', '--folder', type=str, help='destination folder (default .)', default='.')
     parser.add_argument('-c', '--candle', type=valid_timeframe,
                         help='use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H',
                         default=TimeFrame.TICK)
@@ -33,7 +34,7 @@ def main():
         end = args.day
 
     set_up_signals()
-    app(args.symbols, start, end, args.thread, args.candle)
+    app(args.symbols, start, end, args.thread, args.candle, args.folder)
 
 
 if __name__ == '__main__':
