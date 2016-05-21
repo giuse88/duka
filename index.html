@@ -1,33 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
     <title>Duka by giuse88</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/giuse88/duka">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/giuse88/duka/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/giuse88/duka/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <header>
-      <div class="container">
-        <h1>Duka</h1>
-        <h2>Dukascopy historical data downloader </h2>
+    <div class="wrapper">
 
-        <section id="downloads">
-          <a href="https://github.com/giuse88/duka/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/giuse88/duka/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/giuse88/duka" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+      <section>
+        <div id="title">
+          <h1>Duka</h1>
+          <p>Dukascopy historical data downloader </p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/giuse88">giuse88</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
 
-    <div class="container">
-      <section id="main_content">
         <h1>
 <a id="duka---dukascopy-data-downloader" class="anchor" href="#duka---dukascopy-data-downloader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>duka - Dukascopy data downloader</h1>
 
@@ -49,7 +59,7 @@ However, it takes a lot of time to download a large data set from the website be
 
 <p>This is what <strong>duka</strong> looks like:</p>
 
-<p><img src="https://raw.githubusercontent.com/giuse88/duka/master/.img/Screen%20Shot%202016-04-10%20at%2020.15.51.png" alt="duka"></p>
+<p><img src=".img/Screen%20Shot%202016-04-10%20at%2020.15.51.png" alt="duka"></p>
 
 <p>As you can see, <strong>duka</strong> estimates the time left until the download is completed. This is extremely useful when downloading a large data set. </p>
 
@@ -155,8 +165,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
       </section>
-    </div>
 
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
