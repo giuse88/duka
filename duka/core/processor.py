@@ -1,12 +1,27 @@
-import lzma
 import struct
 from datetime import timedelta, datetime
+from lzma import LZMADecompressor, LZMAError, FORMAT_AUTO
 
-lzma._BUFFER_SIZE = 2048
 
-
-def decompress_lzma(compressed_buffer):
-    return lzma.decompress(compressed_buffer)
+def decompress_lzma(data):
+    results = []
+    len(data)
+    while True:
+        decomp = LZMADecompressor(FORMAT_AUTO, None, None)
+        try:
+            res = decomp.decompress(data)
+        except LZMAError:
+            if results:
+                break  # Leftover data is not a valid LZMA/XZ stream; ignore it.
+            else:
+                raise  # Error on the first iteration; bail out.
+        results.append(res)
+        data = decomp.unused_data
+        if not data:
+            break
+        if not decomp.eof:
+            raise LZMAError("Compressed data ended before the end-of-stream marker was reached")
+    return b"".join(results)
 
 
 def tokenize(buffer):
@@ -42,6 +57,7 @@ def normalize(day, ticks):
     def norm(time, ask, bid, volume_ask, volume_bid):
         date = datetime(day.year, day.month, day.day) + timedelta(milliseconds=time)
         return date, ask / 100000, bid / 100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
+
     return add_hour(list(map(lambda x: norm(*x), ticks)))
 
 
