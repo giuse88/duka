@@ -42,6 +42,7 @@ class CSVDumper:
         self.start = start
         self.end = end
         self.folder = folder
+        self.include_header = False
         self.buffer = {}
 
     def get_header(self):
@@ -77,7 +78,8 @@ class CSVDumper:
 
         with open(join(self.folder, file_name), 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=self.get_header())
-            writer.writeheader()
+            if self.include_header:
+                writer.writeheader()
             for day in sorted(self.buffer.keys()):
                 for value in self.buffer[day]:
                     if self.timeframe == TimeFrame.TICK:

@@ -1,6 +1,8 @@
 import asyncio
-import threading
+
 import time
+import datetime
+import threading
 from functools import reduce
 from io import BytesIO, DEFAULT_BUFFER_SIZE
 
@@ -34,20 +36,31 @@ async def get(url):
     raise Exception("Request failed for {0} after ATTEMPTS attempts".format(url))
 
 
-def fetch_day(symbol, day):
-    local_data = threading.local()
-    loop = getattr(local_data, 'loop', asyncio.new_event_loop())
-    asyncio.set_event_loop(loop)
-
+def create_tasks(symbol, day ):
     url_info = {
         'currency': symbol,
         'year': day.year,
         'month': day.month - 1,
         'day': day.day
     }
+    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(1, 24)]
+    next_day = day + datetime.timedelta(days=1)
+    url_info = {
+        'currency': symbol,
+        'year': next_day.year,
+        'month': next_day.month - 1,
+        'day': next_day.day
+    }
+    tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
+    return tasks
 
+
+def fetch_day(symbol, day):
+    local_data = threading.local()
+    loop = getattr(local_data, 'loop', asyncio.new_event_loop())
+    asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
-    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(24)]
+    tasks = create_tasks(symbol, day)
     loop.run_until_complete(asyncio.wait(tasks))
 
     def add(acc, task):
