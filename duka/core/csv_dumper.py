@@ -66,7 +66,8 @@ class CSVDumper:
                 if previous_key != key and previous_key is not None:
                     n = int((key - previous_key) / self.timeframe)
                     for i in range(0, n):
-                        self.buffer[day].append(Candle(self.symbol, previous_key, self.timeframe, current_ticks))
+                        self.buffer[day].append(
+                            Candle(self.symbol, previous_key + i * self.timeframe, self.timeframe, current_ticks))
                     current_ticks = []
                 current_ticks.append(tick[1])
                 previous_key = key
