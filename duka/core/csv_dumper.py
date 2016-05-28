@@ -1,12 +1,15 @@
 import csv
 import time
+from os.path import join
 
 from .candle import Candle
 from .utils import TimeFrame, stringify, Logger
 
-from os.path import join
-
 TEMPLATE_FILE_NAME = "{}-{}_{:02d}_{:02d}-{}_{:02d}_{:02d}.csv"
+
+
+def format_float(number):
+    return format(number, '.5f')
 
 
 class CSVFormatter(object):
@@ -20,8 +23,8 @@ class CSVFormatter(object):
 def write_tick(writer, tick):
     writer.writerow(
         {'time': tick[0],
-         'ask': tick[1],
-         'bid': tick[2],
+         'ask': format_float(tick[1]),
+         'bid': format_float(tick[2]),
          'ask_volume': tick[3],
          'bid_volume': tick[4]})
 
@@ -29,10 +32,10 @@ def write_tick(writer, tick):
 def write_candle(writer, candle):
     writer.writerow(
         {'time': stringify(candle.timestamp),
-         'open': candle.open_price,
-         'close': candle.close_price,
-         'high': candle.high,
-         'low': candle.low})
+         'open': format_float(candle.open_price),
+         'close': format_float(candle.close_price),
+         'high': format_float(candle.high),
+         'low': format_float(candle.low)})
 
 
 class CSVDumper:
