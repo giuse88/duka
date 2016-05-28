@@ -1,8 +1,7 @@
 import asyncio
-
-import time
 import datetime
 import threading
+import time
 from functools import reduce
 from io import BytesIO, DEFAULT_BUFFER_SIZE
 
@@ -12,6 +11,7 @@ from ..core.utils import Logger
 
 URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 ATTEMPTS = 5
+
 
 async def get(url):
     loop = asyncio.get_event_loop()
@@ -31,27 +31,27 @@ async def get(url):
                 Logger.warn("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
         except Exception as e:
             Logger.warn("Request {0} failed with exception : {1}".format(id, str(e)))
-            time.sleep(0.5*i)
+            time.sleep(0.5 * i)
 
     raise Exception("Request failed for {0} after ATTEMPTS attempts".format(url))
 
 
-def create_tasks(symbol, day ):
+def create_tasks(symbol, day):
     url_info = {
         'currency': symbol,
         'year': day.year,
         'month': day.month - 1,
         'day': day.day
     }
-    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(1, 24)]
-    next_day = day + datetime.timedelta(days=1)
-    url_info = {
-        'currency': symbol,
-        'year': next_day.year,
-        'month': next_day.month - 1,
-        'day': next_day.day
-    }
-    tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
+    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(0, 24)]
+    # next_day = day + datetime.timedelta(days=1)
+    # url_info = {
+    #     'currency': symbol,
+    #     'year': next_day.year,
+    #     'month': next_day.month - 1,
+    #     'day': next_day.day
+    # }
+    # tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
     return tasks
 
 

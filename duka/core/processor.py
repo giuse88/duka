@@ -40,7 +40,7 @@ def add_hour(ticks):
     hour_delta = 0
 
     if ticks[0][0].weekday() == 6:
-        hour_delta = 22
+        hour_delta = 21
 
     for index, v in enumerate(ticks):
         if index != 0:

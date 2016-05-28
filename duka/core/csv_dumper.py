@@ -45,7 +45,7 @@ class CSVDumper:
         self.start = start
         self.end = end
         self.folder = folder
-        self.include_header = False
+        self.include_header = True
         self.buffer = {}
 
     def get_header(self):
