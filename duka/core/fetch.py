@@ -26,6 +26,8 @@ async def get(url):
                 for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
                     buffer.write(chunk)
                 Logger.info("Fetched {0} completed in {1}s".format(id, time.time() - start))
+                if len(buffer.getbuffer()) <= 0:
+                    Logger.info("Buffer for {0} is empty ".format(id))
                 return buffer.getbuffer()
             else:
                 Logger.warn("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
