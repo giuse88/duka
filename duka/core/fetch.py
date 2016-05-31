@@ -7,7 +7,7 @@ from io import BytesIO, DEFAULT_BUFFER_SIZE
 
 import requests
 
-from ..core.utils import Logger
+from ..core.utils import Logger, is_dst
 
 URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
 ATTEMPTS = 5
@@ -39,6 +39,12 @@ async def get(url):
 
 
 def create_tasks(symbol, day):
+
+    start = 0
+
+    if is_dst(day):
+        start = 1
+
     url_info = {
         'currency': symbol,
         'year': day.year,
@@ -46,14 +52,16 @@ def create_tasks(symbol, day):
         'day': day.day
     }
     tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(0, 24)]
-    # next_day = day + datetime.timedelta(days=1)
-    # url_info = {
-    #     'currency': symbol,
-    #     'year': next_day.year,
-    #     'month': next_day.month - 1,
-    #     'day': next_day.day
-    # }
-    # tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
+
+    # if is_dst(day):
+    #     next_day = day + datetime.timedelta(days=1)
+    #     url_info = {
+    #         'currency': symbol,
+    #         'year': next_day.year,
+    #         'month': next_day.month - 1,
+    #         'day': next_day.day
+    #     }
+    #     tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
     return tasks
 
 

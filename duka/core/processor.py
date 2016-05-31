@@ -1,6 +1,7 @@
 import struct
 from datetime import timedelta, datetime
 from lzma import LZMADecompressor, LZMAError, FORMAT_AUTO
+from .utils import is_dst
 
 
 def decompress_lzma(data):
@@ -40,7 +41,10 @@ def add_hour(ticks):
     hour_delta = 0
 
     if ticks[0][0].weekday() == 6 or (ticks[0][0].day == 1 and ticks[0][0].month == 1):
-        hour_delta = 22
+        if is_dst(ticks[0][0].date()):
+            hour_delta = 21
+        else:
+            hour_delta = 22
 
     for index, v in enumerate(ticks):
         if index != 0:

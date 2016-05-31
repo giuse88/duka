@@ -4,7 +4,7 @@ import os
 import signal
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 TEMPLATE = '%(asctime)s - %(levelname)s - %(threadName)s [%(thread)d] -  %(message)s'
 
@@ -90,7 +90,7 @@ def stringify(timestamp):
 
 
 def find_sunday(year, month, position):
-    start = datetime(year, month, 1)
+    start = date(year, month, 1)
     day_delta = timedelta(days=1)
     counter = 0
 
