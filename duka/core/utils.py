@@ -114,3 +114,7 @@ def find_dst_end(year):
     DST ends the first sunday of November
     """
     return find_sunday(year, 11, 1)
+
+
+def is_dst(day):
+    return day >= find_dst_begin(day.year) and day < find_dst_end(day.year)
