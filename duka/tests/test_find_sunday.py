@@ -52,3 +52,7 @@ class TestFindSunday(unittest.TestCase):
     def test_day_change_back_is_not_dst(self):
         day = datetime.datetime(2015, 11, 1)
         self.assertFalse(is_dst(day))
+
+    def test_is_dst(self):
+        day = datetime.datetime(2013, 11, 3)
+        self.assertFalse(is_dst(day))
