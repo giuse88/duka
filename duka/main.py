@@ -25,6 +25,7 @@ def main():
     parser.add_argument('-c', '--candle', type=valid_timeframe,
                         help='use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H',
                         default=TimeFrame.TICK)
+    parser.add_argument('--header', action='store_true', help='include CSV header (default false)', default=False)
     args = parser.parse_args()
 
     if args.startdate is not None:
@@ -38,7 +39,7 @@ def main():
         end = args.day
 
     set_up_signals()
-    app(args.symbols, start, end, args.thread, args.candle, args.folder)
+    app(args.symbols, start, end, args.thread, args.candle, args.folder, args.header)
 
 
 if __name__ == '__main__':

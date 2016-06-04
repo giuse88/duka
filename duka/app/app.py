@@ -67,7 +67,7 @@ def name(symbol, timeframe, start, end):
     return name + ext
 
 
-def app(symbols, start, end, threads, timeframe, folder):
+def app(symbols, start, end, threads, timeframe, folder, header):
     if start > end:
         return
     lock = threading.Lock()
@@ -98,7 +98,7 @@ def app(symbols, start, end, threads, timeframe, folder):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
 
-        files = {symbol: CSVDumper(symbol, timeframe, start, end, folder) for symbol in symbols}
+        files = {symbol: CSVDumper(symbol, timeframe, start, end, folder, header) for symbol in symbols}
 
         for symbol in symbols:
             for day in days(start, end):

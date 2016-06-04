@@ -39,13 +39,13 @@ def write_candle(writer, candle):
 
 
 class CSVDumper:
-    def __init__(self, symbol, timeframe, start, end, folder):
+    def __init__(self, symbol, timeframe, start, end, folder, header=False):
         self.symbol = symbol
         self.timeframe = timeframe
         self.start = start
         self.end = end
         self.folder = folder
-        self.include_header = True
+        self.include_header = header
         self.buffer = {}
 
     def get_header(self):
