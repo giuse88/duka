@@ -7,9 +7,14 @@ from duka.app import app
 from duka.core import valid_date, set_up_signals
 from duka.core.utils import valid_timeframe, TimeFrame
 
+NAME = "duka"
+VERSION = '0.2.0'
+
 
 def main():
     parser = argparse.ArgumentParser(prog='duka', usage='%(prog)s [options]')
+    parser.add_argument('-v', '--version', action='version',
+                        version='Version: {name}-{version}'.format(name=NAME, version=VERSION))
     parser.add_argument('symbols', metavar='SYMBOLS', type=str, nargs='+',
                         help='symbol list using format EURUSD EURGBP')
     parser.add_argument('-d', '--day', type=valid_date, help='specific day format YYYY-MM-DD (default today)',
