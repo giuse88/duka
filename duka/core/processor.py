@@ -1,6 +1,7 @@
 import struct
 from datetime import timedelta, datetime
 from lzma import LZMADecompressor, LZMAError, FORMAT_AUTO
+from .utils import is_dst
 
 
 def decompress_lzma(data):
@@ -39,8 +40,11 @@ def add_hour(ticks):
 
     hour_delta = 0
 
-    if ticks[0][0].weekday() == 6:
-        hour_delta = 22
+    if ticks[0][0].weekday() == 6 or (ticks[0][0].day == 1 and ticks[0][0].month == 1):
+        if is_dst(ticks[0][0].date()):
+            hour_delta = 21
+        else:
+            hour_delta = 22
 
     for index, v in enumerate(ticks):
         if index != 0:
@@ -56,6 +60,7 @@ def add_hour(ticks):
 def normalize(day, ticks):
     def norm(time, ask, bid, volume_ask, volume_bid):
         date = datetime(day.year, day.month, day.day) + timedelta(milliseconds=time)
+        # date.replace(tzinfo=datetime.tzinfo("UTC"))
         return date, ask / 100000, bid / 100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
 
     return add_hour(list(map(lambda x: norm(*x), ticks)))

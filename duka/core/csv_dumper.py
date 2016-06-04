@@ -1,12 +1,15 @@
 import csv
 import time
+from os.path import join
 
 from .candle import Candle
 from .utils import TimeFrame, stringify, Logger
 
-from os.path import join
-
 TEMPLATE_FILE_NAME = "{}-{}_{:02d}_{:02d}-{}_{:02d}_{:02d}.csv"
+
+
+def format_float(number):
+    return format(number, '.5f')
 
 
 class CSVFormatter(object):
@@ -20,8 +23,8 @@ class CSVFormatter(object):
 def write_tick(writer, tick):
     writer.writerow(
         {'time': tick[0],
-         'ask': tick[1],
-         'bid': tick[2],
+         'ask': format_float(tick[1]),
+         'bid': format_float(tick[2]),
          'ask_volume': tick[3],
          'bid_volume': tick[4]})
 
@@ -29,10 +32,10 @@ def write_tick(writer, tick):
 def write_candle(writer, candle):
     writer.writerow(
         {'time': stringify(candle.timestamp),
-         'open': candle.open_price,
-         'close': candle.close_price,
-         'high': candle.high,
-         'low': candle.low})
+         'open': format_float(candle.open_price),
+         'close': format_float(candle.close_price),
+         'high': format_float(candle.high),
+         'low': format_float(candle.low)})
 
 
 class CSVDumper:
@@ -42,6 +45,7 @@ class CSVDumper:
         self.start = start
         self.end = end
         self.folder = folder
+        self.include_header = True
         self.buffer = {}
 
     def get_header(self):
@@ -60,7 +64,10 @@ class CSVDumper:
                 ts = time.mktime(tick[0].timetuple())
                 key = int(ts - (ts % self.timeframe))
                 if previous_key != key and previous_key is not None:
-                    self.buffer[day].append(Candle(self.symbol, previous_key, self.timeframe, current_ticks))
+                    n = int((key - previous_key) / self.timeframe)
+                    for i in range(0, n):
+                        self.buffer[day].append(
+                            Candle(self.symbol, previous_key + i * self.timeframe, self.timeframe, current_ticks))
                     current_ticks = []
                 current_ticks.append(tick[1])
                 previous_key = key
@@ -77,7 +84,8 @@ class CSVDumper:
 
         with open(join(self.folder, file_name), 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=self.get_header())
-            writer.writeheader()
+            if self.include_header:
+                writer.writeheader()
             for day in sorted(self.buffer.keys()):
                 for value in self.buffer[day]:
                     if self.timeframe == TimeFrame.TICK:

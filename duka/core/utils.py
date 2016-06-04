@@ -4,9 +4,11 @@ import os
 import signal
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 TEMPLATE = '%(asctime)s - %(levelname)s - %(threadName)s [%(thread)d] -  %(message)s'
+
+SUNDAY = 7
 
 
 class TimeFrame(object):
@@ -85,3 +87,34 @@ def from_time_string(time_str):
 
 def stringify(timestamp):
     return str(datetime.fromtimestamp(timestamp))
+
+
+def find_sunday(year, month, position):
+    start = date(year, month, 1)
+    day_delta = timedelta(days=1)
+    counter = 0
+
+    while True:
+        if start.isoweekday() == SUNDAY:
+            counter += 1
+        if counter == position:
+            return start
+        start += day_delta
+
+
+def find_dst_begin(year):
+    """
+    DST starts the second sunday of March
+    """
+    return find_sunday(year, 3, 2)
+
+
+def find_dst_end(year):
+    """
+    DST ends the first sunday of November
+    """
+    return find_sunday(year, 11, 1)
+
+
+def is_dst(day):
+    return day >= find_dst_begin(day.year) and day < find_dst_end(day.year)
