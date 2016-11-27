@@ -23,10 +23,10 @@ def main():
     parser.add_argument('-t', '--thread', type=int, help='number of threads (default 20)', default=5)
     parser.add_argument('-f', '--folder', type=str, help='destination folder (default .)', default='.')
     parser.add_argument('-c', '--candle', type=valid_timeframe,
-                        help='use candles instead of ticks. Accepted values M2 M5 M10 M15 M30 H1 H4',
+                        help='use candles instead of ticks. Accepted values M1 M2 M5 M10 M15 M30 H1 H4',
                         default=TimeFrame.TICK)
     parser.add_argument('--header', action='store_true', help='include CSV header (default false)', default=False)
-    parser.add_argument('--local-time', action='store_true', help='use local time (default GMT)', default=False)
+    parser.add_argument('--local-time', action='store_true', help='use local time (default UTC)', default=False)
     args = parser.parse_args()
 
     if args.startdate is not None:
