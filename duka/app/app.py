@@ -52,7 +52,7 @@ def avg(fetch_times):
         return -1
 
 
-def name(symbol, timeframe, start, end):
+def name(symbol, timeframe, time, start, end):
     ext = ".csv"
 
     for x in dir(TimeFrame):
@@ -98,7 +98,7 @@ def app(symbols, start, end, threads, timeframe, folder, header, local_time):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
 
-        files = {symbol: CSVDumper(symbol, timeframe, start, end, folder, header) for symbol in symbols}
+        files = {symbol: CSVDumper(symbol, timeframe, start, end, folder, header, local_time) for symbol in symbols}
 
         for symbol in symbols:
             for day in days(start, end):
