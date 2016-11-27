@@ -52,21 +52,6 @@ def avg(fetch_times):
         return -1
 
 
-def name(symbol, timeframe, time, start, end):
-    ext = ".csv"
-
-    for x in dir(TimeFrame):
-        if getattr(TimeFrame, x) == timeframe:
-            ts_str = x
-
-    name = symbol + "_" + ts_str + "_" + str(start)
-
-    if start != end:
-        name += "_" + str(end)
-
-    return name + ext
-
-
 def app(symbols, start, end, threads, timeframe, folder, header, local_time):
     if start > end:
         return
