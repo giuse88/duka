@@ -26,7 +26,7 @@ def main():
                         help='use candles instead of ticks. Accepted values M1 M2 M5 M10 M15 M30 H1 H4',
                         default=TimeFrame.TICK)
     parser.add_argument('--header', action='store_true', help='include CSV header (default false)', default=False)
-    parser.add_argument('--local-time', action='store_true', help='use local time (default UTC)', default=False)
+    parser.add_argument('--local-time', action='store_true', help='use local time (default GMT)', default=False)
     args = parser.parse_args()
 
     if args.startdate is not None:
@@ -40,7 +40,7 @@ def main():
         end = args.day
 
     set_up_signals()
-    app(args.symbols, start, end, args.thread, args.candle, args.folder, args.header, args.local-time)
+    app(args.symbols, start, end, args.thread, args.candle, args.folder, args.header, args.local_time)
 
 
 if __name__ == '__main__':

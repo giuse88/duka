@@ -48,7 +48,7 @@ pip install duka
      -f FOLDER    the dowloaded data will be saved in FOLDER (default '.')
      -t THREAD    number of threads (default 10)
      --header     include CSV header (default false)
-     --local-time use local time (default UTC)
+     --local-time use local time (default GMT)
 ```
 
 ## Examples
