@@ -7,7 +7,7 @@ from duka.app import app
 from duka.core import valid_date, set_up_signals
 from duka.core.utils import valid_timeframe, TimeFrame
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 
 def main():
