@@ -7,7 +7,7 @@ from duka.app import app
 from duka.core import valid_date, set_up_signals
 from duka.core.utils import valid_timeframe, TimeFrame
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     parser.add_argument('-t', '--thread', type=int, help='number of threads (default 20)', default=5)
     parser.add_argument('-f', '--folder', type=str, help='destination folder (default .)', default='.')
     parser.add_argument('-c', '--candle', type=valid_timeframe,
-                        help='use candles instead of ticks. Accepted values 1M 5M 10M 15M 30M 1H 4H',
+                        help='use candles instead of ticks. Accepted values M1 M2 M5 M10 M15 M30 H1 H4',
                         default=TimeFrame.TICK)
     parser.add_argument('--header', action='store_true', help='include CSV header (default false)', default=False)
     args = parser.parse_args()
