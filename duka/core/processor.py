@@ -57,16 +57,19 @@ def add_hour(ticks):
     return ticks
 
 
-def normalize(day, ticks):
+def normalize(symbol, day, ticks):
     def norm(time, ask, bid, volume_ask, volume_bid):
         date = datetime(day.year, day.month, day.day) + timedelta(milliseconds=time)
         # date.replace(tzinfo=datetime.tzinfo("UTC"))
-        return date, ask / 100000, bid / 100000, round(volume_ask * 1000000), round(volume_bid * 1000000)
+        point = 100000
+        if symbol.lower() in ['usdrub', 'xagusd', 'xauusd']:
+            point = 1000
+        return date, ask / point, bid / point, round(volume_ask * 1000000), round(volume_bid * 1000000)
 
     return add_hour(list(map(lambda x: norm(*x), ticks)))
 
 
-def decompress(day, compressed_buffer):
+def decompress(symbol, day, compressed_buffer):
     if compressed_buffer.nbytes == 0:
         return compressed_buffer
-    return normalize(day, tokenize(decompress_lzma(compressed_buffer)))
+    return normalize(symbol, day, tokenize(decompress_lzma(compressed_buffer)))
