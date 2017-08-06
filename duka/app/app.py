@@ -85,7 +85,7 @@ def app(symbols, start, end, threads, timeframe, folder, header):
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
         try:
-            csv.append(day, decompress(day, fetch_day(symbol, day)))
+            csv.append(day, decompress(symbol, day, fetch_day(symbol, day)))
         except Exception as e:
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
