@@ -26,6 +26,8 @@ def main():
                         help='use candles instead of ticks. Accepted values M1 M2 M5 M10 M15 M30 H1 H4',
                         default=TimeFrame.TICK)
     parser.add_argument('--header', action='store_true', help='include CSV header (default false)', default=False)
+    parser.add_argument('-p', '--proxy', type=str, default=None,
+                        help='Proxy URL (e.g. http://127.0.0.1:1080 or http://user:pass@host:port)')
     args = parser.parse_args()
 
     if args.startdate is not None:
@@ -39,7 +41,7 @@ def main():
         end = args.day
 
     set_up_signals()
-    app(args.symbols, start, end, args.thread, args.candle, args.folder, args.header)
+    app(args.symbols, start, end, args.thread, args.candle, args.folder, args.header , proxy=args.proxy)
 
 
 if __name__ == '__main__':

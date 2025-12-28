@@ -3,10 +3,14 @@ import threading
 import time
 from collections import deque
 from datetime import timedelta, date
+import requests
 
 from ..core import decompress, fetch_day, Logger
 from ..core.csv_dumper import CSVDumper
 from ..core.utils import is_debug_mode, TimeFrame
+
+
+session = None
 
 SATURDAY = 5
 day_counter = 0
@@ -67,9 +71,18 @@ def name(symbol, timeframe, start, end):
     return name + ext
 
 
-def app(symbols, start, end, threads, timeframe, folder, header):
+def app(symbols, start, end, threads, timeframe, folder, header, proxy=None):
     if start > end:
         return
+
+    # Create session here
+    session = requests.Session()
+    if proxy:
+        session.proxies.update({'http': proxy, 'https': proxy})
+        Logger.info(f"Using proxy: {proxy}")
+    else:
+        Logger.info("No proxy configured")
+
     lock = threading.Lock()
     global day_counter
     total_days = how_many_days(start, end)
@@ -85,7 +98,9 @@ def app(symbols, start, end, threads, timeframe, folder, header):
         star_time = time.time()
         Logger.info("Fetching day {0}".format(day))
         try:
-            csv.append(day, decompress(symbol, day, fetch_day(symbol, day)))
+            # Pass session to fetch_day
+            data = decompress(symbol, day, fetch_day(symbol, day, session=session))
+            csv.append(day, data)
         except Exception as e:
             print("ERROR for {0}, {1} Exception : {2}".format(day, symbol, str(e)))
         elapsed_time = time.time() - star_time
@@ -115,3 +130,6 @@ def app(symbols, start, end, threads, timeframe, folder, header):
             file.dump()
 
     update_progress(day_counter, total_days, avg(last_fetch), threads)
+
+    # Clean up
+    session.close()
