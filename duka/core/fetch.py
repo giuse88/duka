@@ -1,5 +1,6 @@
 import asyncio
 import os
+import random
 import threading
 import time
 from io import BytesIO, DEFAULT_BUFFER_SIZE
@@ -9,21 +10,34 @@ import requests
 from ..core.utils import Logger
 
 URL = "https://datafeed.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
-ATTEMPTS = 5
-REQUEST_TIMEOUT = 30
-DEFAULT_HOUR_CONCURRENCY = 3
-MAX_BACKOFF_SECONDS = 30
+DEFAULT_ATTEMPTS = 8
+DEFAULT_REQUEST_TIMEOUT = 120
+DEFAULT_HOUR_CONCURRENCY = 1
+MAX_BACKOFF_SECONDS = 60
+REQUEST_HEADERS = {'User-Agent': 'duka/0.2.1'}
+
+
+def env_int(name, default):
+    try:
+        return int(os.getenv(name, default))
+    except ValueError:
+        return default
+
+
+def attempts():
+    return max(1, env_int('DUKA_ATTEMPTS', DEFAULT_ATTEMPTS))
+
+
+def request_timeout():
+    return max(1, env_int('DUKA_REQUEST_TIMEOUT', DEFAULT_REQUEST_TIMEOUT))
 
 
 def hour_concurrency():
-    try:
-        return max(1, int(os.getenv('DUKA_HOUR_CONCURRENCY', DEFAULT_HOUR_CONCURRENCY)))
-    except ValueError:
-        return DEFAULT_HOUR_CONCURRENCY
+    return max(1, env_int('DUKA_HOUR_CONCURRENCY', DEFAULT_HOUR_CONCURRENCY))
 
 
 def backoff_seconds(attempt):
-    return min(MAX_BACKOFF_SECONDS, 2 ** attempt)
+    return min(MAX_BACKOFF_SECONDS, 2 ** attempt) + random.random()
 
 
 async def get(url):
@@ -31,11 +45,17 @@ async def get(url):
     id = url.split("/datafeed/", 1)[-1].replace('/', " ")
     start = time.time()
     Logger.info("Fetching {0}".format(id))
-    for i in range(ATTEMPTS):
+    total_attempts = attempts()
+    for i in range(total_attempts):
         try:
             res = await loop.run_in_executor(
                 None,
-                lambda: requests.get(url, stream=True, timeout=REQUEST_TIMEOUT)
+                lambda: requests.get(
+                    url,
+                    headers=REQUEST_HEADERS,
+                    stream=True,
+                    timeout=request_timeout()
+                )
             )
             if res.status_code == 200:
                 buffer = BytesIO()
@@ -50,10 +70,10 @@ async def get(url):
         except Exception as e:
             Logger.warn("Request {0} failed with exception : {1}".format(id, str(e)))
 
-        if i < ATTEMPTS - 1:
+        if i < total_attempts - 1:
             await asyncio.sleep(backoff_seconds(i))
 
-    raise Exception("Request failed for {0} after ATTEMPTS attempts".format(url))
+    raise Exception("Request failed for {0} after {1} attempts".format(url, total_attempts))
 
 
 async def fetch_hours(symbol, day):
