@@ -1,28 +1,64 @@
 import asyncio
-import datetime
+import os
+import random
 import threading
 import time
-from functools import reduce
 from io import BytesIO, DEFAULT_BUFFER_SIZE
 
 import requests
 
-from ..core.utils import Logger, is_dst
+from ..core.utils import Logger
 
-URL = "https://www.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
-ATTEMPTS = 5
+URL = "https://datafeed.dukascopy.com/datafeed/{currency}/{year}/{month:02d}/{day:02d}/{hour:02d}h_ticks.bi5"
+DEFAULT_ATTEMPTS = 8
+DEFAULT_REQUEST_TIMEOUT = 120
+DEFAULT_HOUR_CONCURRENCY = 1
+MAX_BACKOFF_SECONDS = 60
+REQUEST_HEADERS = {'User-Agent': 'duka/0.2.1'}
+
+
+def env_int(name, default):
+    try:
+        return int(os.getenv(name, default))
+    except ValueError:
+        return default
+
+
+def attempts():
+    return max(1, env_int('DUKA_ATTEMPTS', DEFAULT_ATTEMPTS))
+
+
+def request_timeout():
+    return max(1, env_int('DUKA_REQUEST_TIMEOUT', DEFAULT_REQUEST_TIMEOUT))
+
+
+def hour_concurrency():
+    return max(1, env_int('DUKA_HOUR_CONCURRENCY', DEFAULT_HOUR_CONCURRENCY))
+
+
+def backoff_seconds(attempt):
+    return min(MAX_BACKOFF_SECONDS, 2 ** attempt) + random.random()
 
 
 async def get(url):
     loop = asyncio.get_event_loop()
-    buffer = BytesIO()
-    id = url[35:].replace('/', " ")
+    id = url.split("/datafeed/", 1)[-1].replace('/', " ")
     start = time.time()
     Logger.info("Fetching {0}".format(id))
-    for i in range(ATTEMPTS):
+    total_attempts = attempts()
+    for i in range(total_attempts):
         try:
-            res = await loop.run_in_executor(None, lambda: requests.get(url, stream=True))
+            res = await loop.run_in_executor(
+                None,
+                lambda: requests.get(
+                    url,
+                    headers=REQUEST_HEADERS,
+                    stream=True,
+                    timeout=request_timeout()
+                )
+            )
             if res.status_code == 200:
+                buffer = BytesIO()
                 for chunk in res.iter_content(DEFAULT_BUFFER_SIZE):
                     buffer.write(chunk)
                 Logger.info("Fetched {0} completed in {1}s".format(id, time.time() - start))
@@ -33,25 +69,30 @@ async def get(url):
                 Logger.warn("Request to {0} failed with error code : {1} ".format(url, str(res.status_code)))
         except Exception as e:
             Logger.warn("Request {0} failed with exception : {1}".format(id, str(e)))
-            time.sleep(0.5 * i)
 
-    raise Exception("Request failed for {0} after ATTEMPTS attempts".format(url))
+        if i < total_attempts - 1:
+            await asyncio.sleep(backoff_seconds(i))
+
+    raise Exception("Request failed for {0} after {1} attempts".format(url, total_attempts))
 
 
-def create_tasks(symbol, day):
-
-    start = 0
-
-    if is_dst(day):
-        start = 1
-
+async def fetch_hours(symbol, day):
     url_info = {
         'currency': symbol,
         'year': day.year,
         'month': day.month - 1,
         'day': day.day
     }
-    tasks = [asyncio.ensure_future(get(URL.format(**url_info, hour=i))) for i in range(0, 24)]
+    semaphore = asyncio.Semaphore(hour_concurrency())
+
+    async def fetch_hour(hour):
+        await semaphore.acquire()
+        try:
+            return await get(URL.format(**url_info, hour=hour))
+        finally:
+            semaphore.release()
+
+    tasks = [asyncio.ensure_future(fetch_hour(i)) for i in range(0, 24)]
 
     # if is_dst(day):
     #     next_day = day + datetime.timedelta(days=1)
@@ -62,7 +103,7 @@ def create_tasks(symbol, day):
     #         'day': next_day.day
     #     }
     #     tasks.append(asyncio.ensure_future(get(URL.format(**url_info, hour=0))))
-    return tasks
+    return await asyncio.gather(*tasks)
 
 
 def fetch_day(symbol, day):
@@ -70,11 +111,9 @@ def fetch_day(symbol, day):
     loop = getattr(local_data, 'loop', asyncio.new_event_loop())
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
-    tasks = create_tasks(symbol, day)
-    loop.run_until_complete(asyncio.wait(tasks))
+    buffers = loop.run_until_complete(fetch_hours(symbol, day))
 
-    def add(acc, task):
-        acc.write(task.result())
-        return acc
-
-    return reduce(add, tasks, BytesIO()).getbuffer()
+    output = BytesIO()
+    for buffer in buffers:
+        output.write(buffer)
+    return output.getbuffer()
